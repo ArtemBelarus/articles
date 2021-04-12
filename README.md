@@ -8,7 +8,7 @@
     <li>PHP 7.4</li>
     <li>PHP extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML</li>
     <li>Nginx or Apache/2</li>
-    <li>MySql 8.0</li>
+    <li>MySql 8.0 (for MySql 5.7 uncomment options in config\database.php)</li>
     <li>Composer</li>
 </ul>
 <br>
