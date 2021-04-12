@@ -63,7 +63,7 @@ class SeedTestData extends Seeder
         $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // related numbers
-        $this->command->info('========= Related number =========');
+        $this->command->info('========= Related numbers =========');
         $this->insertCodesIntoTable($codesPreparedData, 'related_numbers', self::MAX_RELATED_NUMBERS_ARTICLE, $startTime);
         $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
