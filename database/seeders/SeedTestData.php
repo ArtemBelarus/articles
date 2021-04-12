@@ -50,7 +50,7 @@ class SeedTestData extends Seeder
         // articles
         $this->command->info('========= Articles =========');
         $this->insertArticles($startTime);
-        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
+        $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // codes data
         $this->command->info('====== Preparing codes data .... ');
@@ -60,17 +60,17 @@ class SeedTestData extends Seeder
         // original codes
         $this->command->info('========= Original codes =========');
         $this->insertCodesIntoTable($codesPreparedData, 'original_codes', self::MAX_ORIGINAL_CODES_PER_ARTICLE, $startTime);
-        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
+        $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // related numbers
         $this->command->info('========= Related number =========');
         $this->insertCodesIntoTable($codesPreparedData, 'related_numbers', self::MAX_RELATED_NUMBERS_ARTICLE, $startTime);
-        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
+        $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // eans
         $this->command->info('========= Eans =========');
         $this->insertCodesIntoTable($codesPreparedData, 'eans', self::MAX_EANS_PER_ARTICLE, $startTime);
-        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
+        $this->command->info('====== Done. Total time = ' . $this->getTime($startTime) . 's.' . "\n");
         $this->command->info('========= Insert test data finished =========');
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
