@@ -4,7 +4,7 @@
 <h4>Requirements: </h4>
 <ul>
     <li>(Tested on:) Intel i5-6200U, 16Gb, 128Gb SSD with 2Gb+ free disk space</li>
-    <li>Ubuntu 20.04 (with unzip tool)</li>
+    <li>Ubuntu 20.04</li>
     <li>PHP 7.4</li>
     <li>PHP extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML</li>
     <li>Nginx or Apache/2</li>
