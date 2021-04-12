@@ -22,7 +22,7 @@
     <li>composer dump-auto</li>
     <li>php artisan key:generate</li>
     <li>php artisan migrate</li>
-    <li>php artisan db:seed (will take approx 10-15 min)</li>
+    <li>php artisan db:seed (will take approx 15-20 min)</li>
 </ul>
 
 

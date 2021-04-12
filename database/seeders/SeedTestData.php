@@ -48,41 +48,30 @@ class SeedTestData extends Seeder
         $startTime = microtime(true);
 
         // articles
-        $this->command->info('========= Articles - insert test data started .... ');
-        $this->insertArticles();
-
-        $totalTime = number_format(microtime(true) - $startTime, 4, '.', '');
-        $this->command->info('====== Total time = ' . $totalTime . 's.' . "\n");
+        $this->command->info('========= Articles =========');
+        $this->insertArticles($startTime);
+        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // codes data
         $this->command->info('====== Preparing codes data .... ');
         $codesPreparedData = $this->prepareCodesData();
-
-        $totalTime = number_format(microtime(true) - $startTime, 4, '.', '');
-        $this->command->info('====== Codes data prepared, total time = ' . $totalTime . 's.' . "\n");
+        $this->command->info('====== Codes data prepared, total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // original codes
-        $this->command->info('====== Original codes - insert test data started .... ');
-        $this->insertCodesIntoTable($codesPreparedData, 'original_codes', self::MAX_ORIGINAL_CODES_PER_ARTICLE);
-
-        $totalTime = number_format(microtime(true) - $startTime, 4, '.', '');
-        $this->command->info('====== Total time = ' . $totalTime . 's.' . "\n");
+        $this->command->info('========= Original codes =========');
+        $this->insertCodesIntoTable($codesPreparedData, 'original_codes', self::MAX_ORIGINAL_CODES_PER_ARTICLE, $startTime);
+        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // related numbers
-        $this->command->info('====== Related number - insert test data started .... ');
-        $this->insertCodesIntoTable($codesPreparedData, 'related_numbers', self::MAX_RELATED_NUMBERS_ARTICLE);
-
-        $totalTime = number_format(microtime(true) - $startTime, 4, '.', '');
-        $this->command->info('====== Total time = ' . $totalTime . 's.' . "\n");
+        $this->command->info('========= Related number =========');
+        $this->insertCodesIntoTable($codesPreparedData, 'related_numbers', self::MAX_RELATED_NUMBERS_ARTICLE, $startTime);
+        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
 
         // eans
-        $this->command->info('====== Eans - insert test data started .... ');
-        $this->insertCodesIntoTable($codesPreparedData, 'eans', self::MAX_EANS_PER_ARTICLE);
-
-        $totalTime = number_format(microtime(true) - $startTime, 4, '.', '');
-        $this->command->info('====== Total time = ' . $totalTime . 's.' . "\n");
-
-        $this->command->info('========= Insert test data finished.');
+        $this->command->info('========= Eans =========');
+        $this->insertCodesIntoTable($codesPreparedData, 'eans', self::MAX_EANS_PER_ARTICLE, $startTime);
+        $this->command->info('====== Total time = ' . $this->getTime($startTime) . 's.' . "\n");
+        $this->command->info('========= Insert test data finished =========');
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
@@ -116,9 +105,10 @@ class SeedTestData extends Seeder
      * @param array $codesPreparedData
      * @param string $table
      * @param int $maxItems
+     * @param float $startTime
      * @throws \Exception
      */
-    private function insertCodesIntoTable(array &$codesPreparedData, string $table, int $maxItems)
+    private function insertCodesIntoTable(array &$codesPreparedData, string $table, int $maxItems, float $startTime)
     {
         $isFileExists = Storage::disk('local')->exists('tmp/tmp_' . $table . '.csv');
 
@@ -137,7 +127,7 @@ class SeedTestData extends Seeder
 
             fclose($file);
 
-            $this->command->info('=== Test data file created, loading it to DB.');
+            $this->command->info('=== Test data file created (total time = ' . $this->getTime($startTime) . 's.), loading it to DB.');
         } else {
             $this->command->info('=== Test data file found, loading it to DB. ');
         }
@@ -153,9 +143,9 @@ class SeedTestData extends Seeder
     }
 
     /**
-     *
+     * @param float $startTime
      */
-    private function insertArticles()
+    private function insertArticles(float $startTime)
     {
         $isFileExists = Storage::disk('local')->exists('tmp/tmp_articles.csv');
 
@@ -171,7 +161,7 @@ class SeedTestData extends Seeder
 
             fclose($file);
 
-            $this->command->info('=== Test data file created, loading it to DB.');
+            $this->command->info('=== Test data file created (total time = ' . $this->getTime($startTime) . 's.), loading it to DB.');
         } else {
             $this->command->info('=== Test data file found, loading it to DB. ');
         }
@@ -184,5 +174,14 @@ class SeedTestData extends Seeder
             (number, number_search)
             SET `number_search` = REPLACE(REPLACE(REPLACE(number, '-', ''), '.', ''), ' ', '')
         ;");
+    }
+
+    /**
+     * @param $startTime
+     * @return string
+     */
+    private function getTime($startTime): string
+    {
+        return number_format(microtime(true) - $startTime, 2, '.', '');
     }
 }
