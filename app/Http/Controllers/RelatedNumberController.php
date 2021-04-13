@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRelatedNumberRequest;
 use App\Services\ArticleService;
 use App\Services\RelatedNumberService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 
 class RelatedNumberController extends Controller
 {
@@ -22,6 +24,11 @@ class RelatedNumberController extends Controller
         $this->relatedNumberService = $relatedNumberService;
     }
 
+    /**
+     * @param StoreRelatedNumberRequest $request
+     * @param int $article_id
+     * @return RedirectResponse|Redirector
+     */
     public function store(StoreRelatedNumberRequest $request, int $article_id)
     {
         $article = $this->articlesService->getArticleById($article_id);
@@ -33,6 +40,11 @@ class RelatedNumberController extends Controller
         return redirect(route('articles.edit', $article->id));
     }
 
+    /**
+     * @param int $articleId
+     * @param int $id
+     * @return RedirectResponse|Redirector
+     */
     public function destroy(int $articleId, int $id)
     {
         $article = $this->articlesService->getArticleById($articleId);

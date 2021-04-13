@@ -6,6 +6,10 @@ use App\Http\Requests\ArticleRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Services\ArticleService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 
 class ArticleController extends Controller
 {
@@ -20,6 +24,10 @@ class ArticleController extends Controller
         $this->articlesService = $articlesService;
     }
 
+    /**
+     * @param ArticleRequest $request
+     * @return Factory|View
+     */
     public function index(ArticleRequest $request)
     {
         $filter = [
@@ -36,6 +44,9 @@ class ArticleController extends Controller
         ]);
     }
 
+    /**
+     * @return Factory|View
+     */
     public function create()
     {
         return view('articles.edit', [
@@ -47,6 +58,10 @@ class ArticleController extends Controller
         ]);
     }
 
+    /**
+     * @param StoreArticleRequest $request
+     * @return RedirectResponse|Redirector
+     */
     public function store(StoreArticleRequest $request)
     {
         $article = $this->articlesService->getNewArticle();
@@ -57,6 +72,10 @@ class ArticleController extends Controller
         return redirect(route('articles.edit', $article->id));
     }
 
+    /**
+     * @param $id
+     * @return Factory|View
+     */
     public function edit($id)
     {
         $article = $this->articlesService->getArticleById($id);
@@ -74,6 +93,11 @@ class ArticleController extends Controller
         ]);
     }
 
+    /**
+     * @param UpdateArticleRequest $request
+     * @param $id
+     * @return RedirectResponse|Redirector
+     */
     public function update(UpdateArticleRequest $request, $id)
     {
         $article = $this->articlesService->getArticleById($id);
@@ -84,6 +108,10 @@ class ArticleController extends Controller
         return redirect(route('articles.edit', $article->id));
     }
 
+    /**
+     * @param $id
+     * @return RedirectResponse|Redirector
+     */
     public function destroy($id)
     {
         $article = $this->articlesService->getArticleById($id);
