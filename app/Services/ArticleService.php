@@ -82,6 +82,11 @@ class ArticleService
      */
     public function deleteArticle(Article $article)
     {
+        // delete related codes here, because myisam = no foreign
+        $article->original_codes()->delete();
+        $article->related_numbers()->delete();
+        $article->eans()->delete();
+
         $article->delete();
     }
 }
