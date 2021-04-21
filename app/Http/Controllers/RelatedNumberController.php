@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRelatedNumberRequest;
 use App\Services\ArticleService;
 use App\Services\RelatedNumberService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
-class RelatedNumberController extends Controller
+class RelatedNumberController
 {
     private ArticleService $articlesService;
     private RelatedNumberService $relatedNumberService;
@@ -26,12 +27,16 @@ class RelatedNumberController extends Controller
 
     /**
      * @param StoreRelatedNumberRequest $request
-     * @param int $article_id
+     * @param int $articleId
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreRelatedNumberRequest $request, int $article_id)
+    public function store(StoreRelatedNumberRequest $request, int $articleId)
     {
-        $article = $this->articlesService->getArticleById($article_id);
+        $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
+
         $relatedNumber = $this->relatedNumberService->getNewRelatedNumber();
         $this->relatedNumberService->updateRelatedNumber($request, $article, $relatedNumber);
 
@@ -48,12 +53,19 @@ class RelatedNumberController extends Controller
     public function destroy(int $articleId, int $id)
     {
         $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
+
         $relatedNumber = $this->relatedNumberService->getRelatedNumberById($article, $id);
+        if (empty($relatedNumber)) {
+            return back()->with('error-message', 'Related number not found.');
+        }
 
         try {
             $this->relatedNumberService->deleteRelatedNumber($relatedNumber);
             session()->flash('success-message', 'Related number deleted.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             session()->flash('error-message', 'Cannot delete related number.');
         }
 

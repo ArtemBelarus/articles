@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Ean;
 use App\Models\OriginalCode;
 use App\Models\RelatedNumber;
+use Exception;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,7 @@ class SeedTestData extends Seeder
     const GENERATE_NEW_FILES = false;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function run()
     {

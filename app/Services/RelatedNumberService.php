@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\RelatedNumber;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class RelatedNumberService
 {
@@ -20,17 +20,12 @@ class RelatedNumberService
     /**
      * @param Article $article
      * @param int $id
-     * @return RelatedNumber
+     * @return RelatedNumber|null
      */
-    public function getRelatedNumberById(Article $article, int $id): RelatedNumber
+    public function getRelatedNumberById(Article $article, int $id): ?RelatedNumber
     {
         /** @var RelatedNumber $relatedNumber */
         $relatedNumber = $article->related_numbers()->where('related_numbers.id', $id)->first();
-
-        if (empty($relatedNumber)) {
-            Redirect::back()->with('error-message', 'Related number not found.')->send();
-        }
-
         return $relatedNumber;
     }
 
@@ -52,7 +47,7 @@ class RelatedNumberService
 
     /**
      * @param RelatedNumber $relatedNumber
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteRelatedNumber(RelatedNumber $relatedNumber)
     {

@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEanRequest;
 use App\Services\ArticleService;
 use App\Services\EanService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
-class EanController extends Controller
+class EanController
 {
     private ArticleService $articlesService;
     private EanService $eanService;
@@ -26,12 +27,16 @@ class EanController extends Controller
 
     /**
      * @param StoreEanRequest $request
-     * @param int $article_id
+     * @param int $articleId
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreEanRequest $request, int $article_id)
+    public function store(StoreEanRequest $request, int $articleId)
     {
-        $article = $this->articlesService->getArticleById($article_id);
+        $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found. ');
+        }
+
         $ean = $this->eanService->getNewEan();
         $this->eanService->updateEan($request, $article, $ean);
 
@@ -48,12 +53,19 @@ class EanController extends Controller
     public function destroy(int $articleId, int $id)
     {
         $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found. ');
+        }
+
         $ean = $this->eanService->getEanById($article, $id);
+        if (empty($ean)) {
+            return back()->with('error-message', 'Ean not found. ');
+        }
 
         try {
             $this->eanService->deleteEan($ean);
             session()->flash('success-message', 'Ean deleted.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             session()->flash('error-message', 'Cannot delete ean.');
         }
 

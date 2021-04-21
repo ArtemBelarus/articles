@@ -6,12 +6,12 @@ use App\Http\Requests\ArticleRequest;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Services\ArticleService;
-use Illuminate\Contracts\View\Factory;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
-class ArticleController extends Controller
+class ArticleController
 {
     private ArticleService $articlesService;
 
@@ -26,7 +26,7 @@ class ArticleController extends Controller
 
     /**
      * @param ArticleRequest $request
-     * @return Factory|View
+     * @return View
      */
     public function index(ArticleRequest $request)
     {
@@ -45,7 +45,7 @@ class ArticleController extends Controller
     }
 
     /**
-     * @return Factory|View
+     * @return View
      */
     public function create()
     {
@@ -74,11 +74,14 @@ class ArticleController extends Controller
 
     /**
      * @param $id
-     * @return Factory|View
+     * @return View|RedirectResponse
      */
     public function edit($id)
     {
         $article = $this->articlesService->getArticleById($id);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
 
         $originalCodes = $article->original_codes;
         $relatedNumbers = $article->related_numbers;
@@ -101,8 +104,11 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, $id)
     {
         $article = $this->articlesService->getArticleById($id);
-        $article = $this->articlesService->updateArticle($request, $article);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
 
+        $article = $this->articlesService->updateArticle($request, $article);
         session()->flash('success-message', 'Article saved.');
 
         return redirect(route('articles.edit', $article->id));
@@ -115,11 +121,14 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         $article = $this->articlesService->getArticleById($id);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
 
         try {
             $this->articlesService->deleteArticle($article);
             session()->flash('success-message', 'Article deleted.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             session()->flash('error-message', 'Cannot delete article.');
         }
 

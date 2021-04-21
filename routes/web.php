@@ -10,9 +10,12 @@ Route::get('/', function () {
     return redirect(route('articles.index'));
 });
 
+Route::pattern('id', '[0-9]+');
+Route::pattern('article', '[0-9]+');
+
 Route::resource('articles', ArticleController::class)->except(['show']);
 
-Route::prefix('articles/{article_id}')->group(function () {
+Route::prefix('articles/{article}')->group(function () {
     Route::post('original_codes', [OriginalCodeController::class, 'store'])->name('original_codes.store');
     Route::delete('original_codes/{id}', [OriginalCodeController::class, 'destroy'])->name('original_codes.destroy');
 

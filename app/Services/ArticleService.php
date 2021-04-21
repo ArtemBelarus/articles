@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Article;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Redirect;
 
 class ArticleService
 {
@@ -47,17 +47,12 @@ class ArticleService
 
     /**
      * @param int $id
-     * @return Article
+     * @return Article|null
      */
-    public function getArticleById(int $id): Article
+    public function getArticleById(int $id): ?Article
     {
         /** @var Article $article */
         $article = Article::query()->find($id);
-
-        if (empty($article)) {
-            Redirect::back()->with('error-message', 'Article not found.')->send();
-        }
-
         return $article;
     }
 
@@ -78,7 +73,7 @@ class ArticleService
 
     /**
      * @param Article $article
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteArticle(Article $article)
     {

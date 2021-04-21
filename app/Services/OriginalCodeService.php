@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\OriginalCode;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class OriginalCodeService
 {
@@ -20,17 +20,12 @@ class OriginalCodeService
     /**
      * @param Article $article
      * @param int $id
-     * @return OriginalCode
+     * @return OriginalCode|null
      */
-    public function getOriginalCodeById(Article $article, int $id): OriginalCode
+    public function getOriginalCodeById(Article $article, int $id): ?OriginalCode
     {
         /** @var OriginalCode $originalCode */
         $originalCode = $article->original_codes()->where('original_codes.id', $id)->first();
-
-        if (empty($originalCode)) {
-            Redirect::back()->with('error-message', 'Original code not found.')->send();
-        }
-
         return $originalCode;
     }
 
@@ -52,7 +47,7 @@ class OriginalCodeService
 
     /**
      * @param OriginalCode $originalCode
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteOriginalCode(OriginalCode $originalCode)
     {

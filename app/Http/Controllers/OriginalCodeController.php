@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOriginalCodeRequest;
 use App\Services\ArticleService;
 use App\Services\OriginalCodeService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
-class OriginalCodeController extends Controller
+class OriginalCodeController
 {
     private ArticleService $articlesService;
     private OriginalCodeService $originalCodeService;
@@ -26,12 +27,16 @@ class OriginalCodeController extends Controller
 
     /**
      * @param StoreOriginalCodeRequest $request
-     * @param int $article_id
+     * @param int $articleId
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreOriginalCodeRequest $request, int $article_id)
+    public function store(StoreOriginalCodeRequest $request, int $articleId)
     {
-        $article = $this->articlesService->getArticleById($article_id);
+        $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
+
         $originalCode = $this->originalCodeService->getNewOriginalCode();
         $this->originalCodeService->updateOriginalCode($request, $article, $originalCode);
 
@@ -48,12 +53,19 @@ class OriginalCodeController extends Controller
     public function destroy(int $articleId, int $id)
     {
         $article = $this->articlesService->getArticleById($articleId);
+        if (empty($article)) {
+            return back()->with('error-message', 'Article not found.');
+        }
+
         $originalCode = $this->originalCodeService->getOriginalCodeById($article, $id);
+        if (empty($originalCode)) {
+            return back()->with('error-message', 'Original code not found.');
+        }
 
         try {
             $this->originalCodeService->deleteOriginalCode($originalCode);
             session()->flash('success-message', 'Original code deleted.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             session()->flash('error-message', 'Cannot delete original code.');
         }
 

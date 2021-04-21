@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\Ean;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class EanService
 {
@@ -20,17 +20,12 @@ class EanService
     /**
      * @param Article $article
      * @param int $id
-     * @return Ean
+     * @return Ean|null
      */
-    public function getEanById(Article $article, int $id): Ean
+    public function getEanById(Article $article, int $id): ?Ean
     {
         /** @var Ean $ean */
         $ean = $article->eans()->where('eans.id', $id)->first();
-
-        if (empty($ean)) {
-            Redirect::back()->with('error-message', 'Ean not found.')->send();
-        }
-
         return $ean;
     }
 
@@ -52,7 +47,7 @@ class EanService
 
     /**
      * @param Ean $ean
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteEan(Ean $ean)
     {
