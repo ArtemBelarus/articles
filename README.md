@@ -1,5 +1,5 @@
 <h2>Articles</h2>
-<h3>Test project for "Aero Motors"</h3>
+<h3>Test project</h3>
 <br>
 <h4>Requirements: </h4>
 <ul>
