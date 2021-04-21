@@ -23,6 +23,8 @@
     <li>php artisan key:generate</li>
     <li>php artisan migrate</li>
     <li>php artisan db:seed (will take approx 15-20 min)</li>
+    <li>sudo chgrp -R www-data storage bootstrap/cache</li>
+    <li>sudo chmod -R ug+rwx storage bootstrap/cache</li>
 </ul>
 
 
