@@ -10,9 +10,6 @@ Route::get('/', function () {
     return redirect(route('articles.index'));
 });
 
-Route::pattern('id', '[0-9]+');
-Route::pattern('article', '[0-9]+');
-
 Route::resource('articles', ArticleController::class)->except(['show']);
 
 Route::prefix('articles/{article}')->group(function () {

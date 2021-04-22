@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRelatedNumberRequest;
+use App\Models\Article;
 use App\Services\ArticleService;
 use App\Services\RelatedNumberService;
 use Exception;
@@ -27,16 +28,11 @@ class RelatedNumberController
 
     /**
      * @param StoreRelatedNumberRequest $request
-     * @param int $articleId
+     * @param Article $article
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreRelatedNumberRequest $request, int $articleId)
+    public function store(StoreRelatedNumberRequest $request, Article $article)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found.');
-        }
-
         $relatedNumber = $this->relatedNumberService->getNewRelatedNumber();
         $this->relatedNumberService->updateRelatedNumber($request, $article, $relatedNumber);
 
@@ -46,17 +42,12 @@ class RelatedNumberController
     }
 
     /**
-     * @param int $articleId
+     * @param Article $article
      * @param int $id
      * @return RedirectResponse|Redirector
      */
-    public function destroy(int $articleId, int $id)
+    public function destroy(Article $article, int $id)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found.');
-        }
-
         $relatedNumber = $this->relatedNumberService->getRelatedNumberById($article, $id);
         if (empty($relatedNumber)) {
             return back()->with('error-message', 'Related number not found.');
@@ -69,6 +60,6 @@ class RelatedNumberController
             session()->flash('error-message', 'Cannot delete related number.');
         }
 
-        return redirect(route('articles.edit', $articleId));
+        return redirect(route('articles.edit', $article->id));
     }
 }

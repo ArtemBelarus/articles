@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEanRequest;
+use App\Models\Article;
 use App\Services\ArticleService;
 use App\Services\EanService;
 use Exception;
@@ -27,16 +28,11 @@ class EanController
 
     /**
      * @param StoreEanRequest $request
-     * @param int $articleId
+     * @param Article $article
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreEanRequest $request, int $articleId)
+    public function store(StoreEanRequest $request, Article $article)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found. ');
-        }
-
         $ean = $this->eanService->getNewEan();
         $this->eanService->updateEan($request, $article, $ean);
 
@@ -46,17 +42,12 @@ class EanController
     }
 
     /**
-     * @param int $articleId
+     * @param Article $article
      * @param int $id
      * @return RedirectResponse|Redirector
      */
-    public function destroy(int $articleId, int $id)
+    public function destroy(Article $article, int $id)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found. ');
-        }
-
         $ean = $this->eanService->getEanById($article, $id);
         if (empty($ean)) {
             return back()->with('error-message', 'Ean not found. ');
@@ -69,6 +60,6 @@ class EanController
             session()->flash('error-message', 'Cannot delete ean.');
         }
 
-        return redirect(route('articles.edit', $articleId));
+        return redirect(route('articles.edit', $article->id));
     }
 }

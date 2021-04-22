@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOriginalCodeRequest;
+use App\Models\Article;
 use App\Services\ArticleService;
 use App\Services\OriginalCodeService;
 use Exception;
@@ -27,16 +28,11 @@ class OriginalCodeController
 
     /**
      * @param StoreOriginalCodeRequest $request
-     * @param int $articleId
+     * @param Article $article
      * @return RedirectResponse|Redirector
      */
-    public function store(StoreOriginalCodeRequest $request, int $articleId)
+    public function store(StoreOriginalCodeRequest $request, Article $article)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found.');
-        }
-
         $originalCode = $this->originalCodeService->getNewOriginalCode();
         $this->originalCodeService->updateOriginalCode($request, $article, $originalCode);
 
@@ -46,17 +42,12 @@ class OriginalCodeController
     }
 
     /**
-     * @param int $articleId
+     * @param Article $article
      * @param int $id
      * @return RedirectResponse|Redirector
      */
-    public function destroy(int $articleId, int $id)
+    public function destroy(Article $article, int $id)
     {
-        $article = $this->articlesService->getArticleById($articleId);
-        if (empty($article)) {
-            return back()->with('error-message', 'Article not found.');
-        }
-
         $originalCode = $this->originalCodeService->getOriginalCodeById($article, $id);
         if (empty($originalCode)) {
             return back()->with('error-message', 'Original code not found.');
@@ -69,6 +60,6 @@ class OriginalCodeController
             session()->flash('error-message', 'Cannot delete original code.');
         }
 
-        return redirect(route('articles.edit', $articleId));
+        return redirect(route('articles.edit', $article->id));
     }
 }
